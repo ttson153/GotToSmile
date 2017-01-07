@@ -18,24 +18,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tts on 1/7/17.
+ * Created by beekill on 1/8/17.
  */
 
-public class PosterLinkLoader {
-    private AsyncTaskListener listener;
+public class PosterPouplarLoader {
 
-    public PosterLinkLoader() {
+    private OnPosterPopularAsyncFinish listener;
+
+    public interface OnPosterPopularAsyncFinish {
+        void handleResult(List<String> listLinks);
     }
 
-    public interface AsyncTaskListener {
-        void onFinish(List<String> listLinks);
-    }
-
-    public class RequestJSON extends AsyncTask<String, Void, ArrayList<String>> {
-        private static final String MOVIEDB_URL = "https://api.themoviedb.org/3/search/movie?";
-        public static final String API_KEY = "15d2ea6d0dc1d476efbca3eba2b9bbfb";
-//        public static final String MOVIEIMG_URL = "http://image.tmdb.org/t/p/";
-//        public static final String IMG_SIZE = "w500/";
+    private class RequestJSON extends AsyncTask<Void, Void, ArrayList<String>> {
+        private static final String MOVIEDB_URL = "https://api.themoviedb.org/3/discover/movie?";
+        private static final String API_KEY = "15d2ea6d0dc1d476efbca3eba2b9bbfb";
+        private static final String POPULAR_MOVIE = "sort_by=popularity.desc";
 
         public String iStreamToString(InputStream is1) {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is1), 4096);
@@ -64,9 +61,10 @@ public class PosterLinkLoader {
             is.close();
             return sb.toString();
         }
+
         @Override
-        protected ArrayList<String> doInBackground(String... text) {
-            String urlRequest = MOVIEDB_URL + "api_key=" + API_KEY + "&query=" + text[0];
+        protected ArrayList<String> doInBackground(Void... params) {
+            String urlRequest = MOVIEDB_URL + "api_key=" + API_KEY + '&' + POPULAR_MOVIE;
             ArrayList<String> res = new ArrayList<>();
             try {
                 URL url;
@@ -117,18 +115,18 @@ public class PosterLinkLoader {
 
     private void handleResult(ArrayList<String> listLinks) {
         if (listener != null)
-            listener.onFinish(listLinks);
+            listener.handleResult(listLinks);
     }
 
-    public void start(String movieName) {
-        new RequestJSON().execute(movieName);
+    public void start() {
+        new RequestJSON().execute();
     }
 
-    public AsyncTaskListener getListener() {
+    public OnPosterPopularAsyncFinish getListener() {
         return listener;
     }
 
-    public void setListener(AsyncTaskListener listener) {
+    public void setListener(OnPosterPopularAsyncFinish listener) {
         this.listener = listener;
     }
 }

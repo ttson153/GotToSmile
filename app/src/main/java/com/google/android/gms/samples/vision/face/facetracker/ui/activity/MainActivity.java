@@ -19,13 +19,14 @@ import android.os.Looper;
 import com.google.android.gms.samples.vision.face.facetracker.Poster;
 import com.google.android.gms.samples.vision.face.facetracker.R;
 import com.google.android.gms.samples.vision.face.facetracker.posterdownloader.PosterLinkLoader;
+import com.google.android.gms.samples.vision.face.facetracker.posterdownloader.PosterPouplarLoader;
 import com.google.android.gms.samples.vision.face.facetracker.ui.adapter.PosterAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-    implements PosterLinkLoader.AsyncTaskListener
+    implements PosterLinkLoader.AsyncTaskListener, PosterPouplarLoader.OnPosterPopularAsyncFinish
 {
 
 //    private static final int QUERY_POPULAR_MSG = 15;
@@ -110,11 +111,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void onDiscoverPopularMovie() {
-        // TODO: fill with genuine data
+        PosterPouplarLoader loader = new PosterPouplarLoader();
+        loader.setListener(this);
+        loader.start();
+    }
+
+    @Override
+    public void onFinish(List<String> listLinks) {
         List<Poster> posterList = new ArrayList<>();
-        for (int i = 0; i < 10; ++i)
-            posterList.add(new Poster("", "", "/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg"));
-        posterAdapter.setPosterList(posterList);
+        for (String link : listLinks) {
+            posterList.add(new Poster("", "", link));
+        }
 
         // update ui
         posterAdapter.setPosterList(posterList);
@@ -122,11 +129,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFinish(List<String> listLinks) {
-//        Message message = Message.obtain();
-//        message.what = QUERY_MOVIVE_MSG;
-//        message.
-
+    public void handleResult(List<String> listLinks) {
         List<Poster> posterList = new ArrayList<>();
         for (String link : listLinks) {
             posterList.add(new Poster("", "", link));
