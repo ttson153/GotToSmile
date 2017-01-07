@@ -22,13 +22,13 @@ import java.util.List;
  */
 
 public class PosterLinkLoader {
-    private ArrayList<String> listLink;
+    private AsyncTaskListener listener;
 
     public PosterLinkLoader() {
     }
 
     public interface AsyncTaskListener {
-        void onFinish(List<String> listLink);
+        void onFinish(List<String> listLinks);
     }
 
     public class RequestJSON extends AsyncTask<String, Void, ArrayList<String>> {
@@ -95,7 +95,8 @@ public class PosterLinkLoader {
 
                     for (int i = 0; i < result.length(); i++) {
                         String poster_path = result.getJSONObject(i).getString("poster_path");
-                        res.add(MOVIEIMG_URL + IMG_SIZE + poster_path);
+//                        res.add(MOVIEIMG_URL + IMG_SIZE + poster_path);
+                        res.add(poster_path);
 //                        Log.d("Movie poster url", MOVIEIMG_URL + IMG_SIZE + poster_path);
                     }
 
@@ -114,14 +115,20 @@ public class PosterLinkLoader {
         }
     }
 
-    public void handleResult(ArrayList<String> movieName) {
-        //TODO replace with your own code (i.e. load image with Picasso)
-        for (int i = 0; i < movieName.size(); i++) {
-            Log.d("Movie poster url", movieName.get(i));
-        }
+    public void handleResult(ArrayList<String> listLinks) {
+        if (listener != null)
+            listener.onFinish(listLinks);
     }
 
     public void start(String movieName) {
         new RequestJSON().execute(movieName);
+    }
+
+    public AsyncTaskListener getListener() {
+        return listener;
+    }
+
+    public void setListener(AsyncTaskListener listener) {
+        this.listener = listener;
     }
 }

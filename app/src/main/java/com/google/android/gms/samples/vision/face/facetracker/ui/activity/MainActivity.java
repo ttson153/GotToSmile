@@ -1,6 +1,7 @@
 package com.google.android.gms.samples.vision.face.facetracker.ui.activity;
 
 import android.content.Intent;
+import android.os.Message;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,20 +13,40 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.google.android.gms.samples.vision.face.facetracker.Poster;
 import com.google.android.gms.samples.vision.face.facetracker.R;
+import com.google.android.gms.samples.vision.face.facetracker.posterdownloader.PosterLinkLoader;
 import com.google.android.gms.samples.vision.face.facetracker.ui.adapter.PosterAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+    implements PosterLinkLoader.AsyncTaskListener
+{
+
+//    private static final int QUERY_POPULAR_MSG = 15;
+//    private static final int QUERY_MOVIVE_MSG = 28;
 
     private GridView posterGridView;
     private PosterAdapter posterAdapter;
-
-    private List<Poster> posterList = new ArrayList<>();
+//    private Handler loadDatabaseHandler = new Handler(Looper.getMainLooper()) {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case QUERY_MOVIVE_MSG:
+//                    break;
+//                case QUERY_POPULAR_MSG:
+//                    break;
+//                default:
+//                    super.handleMessage(msg);
+//            }
+//
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
         posterGridView = (GridView) findViewById(R.id.posterGridView);
         posterAdapter = new PosterAdapter(this);
-        posterAdapter.setPosterList(posterList);
+
 
         // TODO: fill with genuine data
+        List<Poster> posterList = new ArrayList<>();
         for (int i = 0; i < 10; ++i)
             posterList.add(new Poster());
+        posterAdapter.setPosterList(posterList);
 
         posterGridView.setAdapter(posterAdapter);
         posterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -82,7 +105,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSearchPoster(String movieName) {
-        // TODO: search for film name
-        // and display
+        PosterLinkLoader linkLoader = new PosterLinkLoader();
+        linkLoader.setListener(this);
+        linkLoader.start(movieName);
+    }
+
+    @Override
+    public void onFinish(List<String> listLinks) {
+//        Message message = Message.obtain();
+//        message.what = QUERY_MOVIVE_MSG;
+//        message.
+
+        List<Poster> posterList = new ArrayList<>();
+        for (String link : listLinks) {
+            posterList.add(new Poster("", "", link));
+        }
+
+        // update ui
+        posterAdapter.setPosterList(posterList);
+        posterAdapter.notifyDataSetChanged();
     }
 }
