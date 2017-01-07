@@ -45,6 +45,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.samples.vision.face.facetracker.R;
 import com.google.android.gms.samples.vision.face.facetracker.facedetector.FaceView;
 import com.google.android.gms.samples.vision.face.facetracker.facedetector.SafeFaceDetector;
+import com.google.android.gms.samples.vision.face.facetracker.posterdownloader.PosterLinkLoader;
+import com.google.android.gms.samples.vision.face.facetracker.posterdownloader.PosterLoader;
 import com.google.android.gms.samples.vision.face.facetracker.ui.camera.CameraSourcePreview;
 import com.google.android.gms.samples.vision.face.facetracker.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.CameraSource;
@@ -61,12 +63,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Activity for the face tracker app.  This app detects faces with the rear facing camera, and draws
  * overlay graphics to indicate the position, size, and ID of each face.
  */
-public final class FaceTrackerActivity extends AppCompatActivity {
+public final class FaceTrackerActivity extends AppCompatActivity
+    implements PosterLinkLoader.AsyncTaskListener, PosterLoader.OnAsyncTaskFinished
+{
     private static final String TAG = "FaceTracker";
 
     private CameraSource mCameraSource = null;
@@ -195,6 +200,16 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    public void onFinish(List<String> listLink) {
+
+    }
+
+    @Override
+    public void onFinish(Bitmap image) {
+
+    }
+
     //==============================================================================================
     // Activity Methods
     //==============================================================================================
@@ -207,6 +222,10 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         super.onCreate(icicle);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.main);
+
+        new PosterLinkLoader().start("interstellar");
+//        new PosterLinkLoader().getLink("interstellar");
+//        Bitmap bitmap = new PosterLoader().getThumb("w500", "/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg");
 
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
