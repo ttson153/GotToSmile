@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import com.google.android.gms.samples.vision.face.facetracker.Poster;
 import com.google.android.gms.samples.vision.face.facetracker.R;
+import com.google.android.gms.samples.vision.face.facetracker.util.MoviePosterUrl;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -37,12 +38,10 @@ public class PosterFullView extends AppCompatActivity {
 
         // else
         // populate the image view
-        // TODO: download full size poster image
-        posterImage = BitmapFactory.decodeResource(getResources(), R.drawable.common_full_open_on_phone);
+//        posterImage = BitmapFactory.decodeResource(getResources(), R.drawable.common_full_open_on_phone);
 
-        // TODO: set image poster
         final ImageView posterView = (ImageView) findViewById(R.id.posterView);
-        posterView.setImageBitmap(posterImage);
+//        posterView.setImageBitmap(posterImage);
 
         loadTarget = new Target() {
             @Override
@@ -61,12 +60,16 @@ public class PosterFullView extends AppCompatActivity {
             }
         };
 
-//        Picasso.with(this).load("url").into(loadTarget);
+        Picasso.with(this)
+                .load(MoviePosterUrl.getPosterUrl(selectedPoster.getImagePath(), MoviePosterUrl.MoviePosterSize.LARGE))
+                .placeholder(R.drawable.icon)
+                .error(R.drawable.common_full_open_on_phone)
+                .into(loadTarget);
     }
 
     public void btnPosterViewOnClicked(View view) {
         Intent takePictureIntent = new Intent(PosterFullView.this, FaceTrackerActivity.class);
-        takePictureIntent.putExtra("poster", posterImage);
+        takePictureIntent.putExtra("poster", selectedPoster);
         startActivity(takePictureIntent);
     }
 
