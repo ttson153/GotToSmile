@@ -44,18 +44,18 @@ public class FaceSwapActivity extends AppCompatActivity {
     private Bitmap swappedImage;
 
     private static final String PERMISSION = "publish_actions";
-    private static final Location SEATTLE_LOCATION = new Location("") {
-        {
-            setLatitude(47.6097);
-            setLongitude(-122.3331);
-        }
-    };
+//    private static final Location SEATTLE_LOCATION = new Location("") {
+//        {
+//            setLatitude(47.6097);
+//            setLongitude(-122.3331);
+//        }
+//    };
 
     private final String PENDING_ACTION_BUNDLE_KEY =
             "GotToSmile.FaceSwapActivity:PendingAction";
 
-    private ProfilePictureView profilePictureView;
-    private TextView greeting;
+//    private ProfilePictureView profilePictureView;
+//    private TextView greeting;
     private PendingAction pendingAction = PendingAction.NONE;
     private boolean canPresentShareDialogWithPhotos;
     private CallbackManager callbackManager;
@@ -109,7 +109,8 @@ public class FaceSwapActivity extends AppCompatActivity {
 
         // get image
         Intent intent = getIntent();
-        swappedImage = intent.getParcelableExtra("image");
+//        swappedImage = intent.getParcelableExtra("image");
+        swappedImage = BitmapFactory.decodeResource(getResources(), R.drawable.common_full_open_on_phone);
 
         if (swappedImage == null) {
             Log.i(TAG, "No image found in intent in activity " + FaceSwapActivity.class);
@@ -170,8 +171,6 @@ public class FaceSwapActivity extends AppCompatActivity {
             pendingAction = PendingAction.valueOf(name);
         }
 
-        setContentView(R.layout.activity_main);
-
         profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
@@ -197,7 +196,12 @@ public class FaceSwapActivity extends AppCompatActivity {
         // description is: ""
 
         Date currentDate = new Date();
-        CapturePhotoUtils.insertImage(getContentResolver(), swappedImage, TAG + '_' + currentDate.toString(), "");
+        String savedUrl = CapturePhotoUtils.insertImage(getContentResolver(), swappedImage, TAG + '_' + currentDate.getTime(), "");
+
+        if (savedUrl != null)
+            Toast.makeText(this, "Image saved", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "Image failed to save", Toast.LENGTH_SHORT).show();
     }
 
     public void onPostFacebookButtonClicked(View view) {

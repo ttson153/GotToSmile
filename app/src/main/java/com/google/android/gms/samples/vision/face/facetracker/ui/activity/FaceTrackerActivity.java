@@ -42,6 +42,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.samples.vision.face.facetracker.Poster;
 import com.google.android.gms.samples.vision.face.facetracker.R;
 import com.google.android.gms.samples.vision.face.facetracker.facedetector.FaceView;
 import com.google.android.gms.samples.vision.face.facetracker.facedetector.SafeFaceDetector;
@@ -70,7 +71,6 @@ import java.util.List;
  * overlay graphics to indicate the position, size, and ID of each face.
  */
 public final class FaceTrackerActivity extends AppCompatActivity
-    implements PosterLinkLoader.AsyncTaskListener, PosterLoader.OnAsyncTaskFinished
 {
     private static final String TAG = "FaceTracker";
 
@@ -85,12 +85,20 @@ public final class FaceTrackerActivity extends AppCompatActivity
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
 
+    private Poster poster;
+
     private CameraSource.PictureCallback pictureCallback = new CameraSource.PictureCallback() {
         private File imageFile;
 
         @Override
         public void onPictureTaken(byte[] bytes) {
 //            Debug.waitForDebugger();
+
+            // start another activity
+            Intent startResultIntent = new Intent(FaceTrackerActivity.this, FaceSwapActivity.class);
+            startResultIntent.putExtra("poster", poster);
+            startActivity(startResultIntent);
+            finish();
 
             try {
                 // convert byte array into bitmap
@@ -194,21 +202,13 @@ public final class FaceTrackerActivity extends AppCompatActivity
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
                 //saveToInternalStorage(loadedImage);
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
-
-    @Override
-    public void onFinish(List<String> listLink) {
-
-    }
-
-    @Override
-    public void onFinish(Bitmap image) {
-
-    }
 
     //==============================================================================================
     // Activity Methods
@@ -244,6 +244,9 @@ public final class FaceTrackerActivity extends AppCompatActivity
         } else {
             requestCameraPermission();
         }
+
+        Intent intent = getIntent();
+        poster = intent.getParcelableExtra("poster");
     }
 
     /**
