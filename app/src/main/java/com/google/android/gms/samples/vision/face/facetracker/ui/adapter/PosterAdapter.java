@@ -1,6 +1,7 @@
 package com.google.android.gms.samples.vision.face.facetracker.ui.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +11,10 @@ import android.widget.ImageView;
 
 import com.google.android.gms.samples.vision.face.facetracker.Poster;
 import com.google.android.gms.samples.vision.face.facetracker.R;
+import com.google.android.gms.samples.vision.face.facetracker.util.MoviePosterUrl;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,8 +24,9 @@ import java.util.List;
 public class PosterAdapter extends BaseAdapter {
 
     private Context context;
-    private List<Poster> posterList;
-    private static int POSTER_THUMBNAIL_WIDTH = 500;
+    private List<Poster> posterList = new ArrayList<>();
+    private static int POSTER_THUMBNAIL_WIDTH = 1000;
+    private static final String TAG = "GotToSmile";
 
     public PosterAdapter(Context context) {
         this.context = context;
@@ -53,31 +57,34 @@ public class PosterAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView = (ImageView) convertView;
+        ImageView imageView;
+//        ImageView imageView = (ImageView) convertView;
 //
-//        Display display = convertView.get.getDefaultDisplay();
+//        Display display = context.getDefaultDisplay();
 //        int width = display.getWidth();
 //        double ratio = ((float) (width))/300.0;
 //        int height = (int)(ratio*50);
 
-//        if (convertView == null) {
-//            imageView = new ImageView(context);
-//            imageView.setLayoutParams(new GridView.LayoutParams(POSTER_THUMBNAIL_WIDTH, ViewGroup.LayoutParams.WRAP_CONTENT));
-////            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//            imageView.setPadding(5, 5, 5, 5);
-//        } else {
-//            imageView = (ImageView) convertView;
-//        }
+        if (convertView == null) {
+            imageView = new ImageView(context);
+            imageView.setLayoutParams(new GridView.LayoutParams(POSTER_THUMBNAIL_WIDTH, ViewGroup.LayoutParams.WRAP_CONTENT));
+//            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setPadding(5, 5, 5, 5);
+        } else {
+            imageView = (ImageView) convertView;
+        }
 
-        // Todo: hay sua cai nay de lay anh thumbnail ve
-        imageView.setImageResource(android.R.drawable.ic_menu_add);
+//        imageView.setImageResource(android.R.drawable.ic_menu_add);
 
-//        Picasso
-//                .with(context)
-//                .load("url")
-//                .placeholder(R.drawable.icon)
-//                .error(R.drawable.common_full_open_on_phone)
-//                .into(imageView);
+        Poster poster = (Poster) getItem(position);
+        Log.i(TAG, MoviePosterUrl.getPosterUrl(poster.getImagePath(), MoviePosterUrl.MoviePosterSize.SMALL));
+
+        Picasso
+                .with(context)
+                .load(MoviePosterUrl.getPosterUrl(poster.getImagePath(), MoviePosterUrl.MoviePosterSize.SMALL))
+                .placeholder(R.drawable.icon)
+                .error(R.drawable.common_full_open_on_phone)
+                .into(imageView);
 
         return imageView;
     }

@@ -56,13 +56,6 @@ public class MainActivity extends AppCompatActivity
         posterGridView = (GridView) findViewById(R.id.posterGridView);
         posterAdapter = new PosterAdapter(this);
 
-
-        // TODO: fill with genuine data
-        List<Poster> posterList = new ArrayList<>();
-        for (int i = 0; i < 10; ++i)
-            posterList.add(new Poster());
-        posterAdapter.setPosterList(posterList);
-
         posterGridView.setAdapter(posterAdapter);
         posterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -70,6 +63,8 @@ public class MainActivity extends AppCompatActivity
                 onPosterClicked((Poster) posterAdapter.getItem(position));
             }
         });
+
+        onDiscoverPopularMovie();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -77,7 +72,7 @@ public class MainActivity extends AppCompatActivity
         inflater.inflate(R.menu.search_menu, menu);
 
         // add callback for text changed
-        EditText searchEditText = (EditText) MenuItemCompat.getActionView(menu.findItem(R.id.searchEditText));
+        EditText searchEditText = (EditText) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -92,7 +87,11 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void afterTextChanged(Editable s) {
                 String searchString = s.toString();
-                onSearchPoster(searchString);
+
+                if (s.equals(""))
+                    onDiscoverPopularMovie();
+                else
+                    onSearchPoster(searchString);
             }
         });
         return true;
@@ -108,6 +107,18 @@ public class MainActivity extends AppCompatActivity
         PosterLinkLoader linkLoader = new PosterLinkLoader();
         linkLoader.setListener(this);
         linkLoader.start(movieName);
+    }
+
+    private void onDiscoverPopularMovie() {
+        // TODO: fill with genuine data
+        List<Poster> posterList = new ArrayList<>();
+        for (int i = 0; i < 10; ++i)
+            posterList.add(new Poster("", "", "/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg"));
+        posterAdapter.setPosterList(posterList);
+
+        // update ui
+        posterAdapter.setPosterList(posterList);
+        posterAdapter.notifyDataSetChanged();
     }
 
     @Override
