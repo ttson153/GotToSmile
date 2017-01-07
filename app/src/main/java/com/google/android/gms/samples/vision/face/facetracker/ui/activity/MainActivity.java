@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(showFullPosterIntent);
     }
 
-    private void onSearchPoster(String filmName) {
+    private void onSearchPoster(String movieName) {
         // TODO: search for film name
         // and display
     }

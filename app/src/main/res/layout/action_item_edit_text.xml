@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <EditText xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/editInput"
+    android:id="@+id/searchEditText"
     android:layout_width="140dp"
     android:layout_height="?attr/actionBarSize"
     android:hint="Write something"
