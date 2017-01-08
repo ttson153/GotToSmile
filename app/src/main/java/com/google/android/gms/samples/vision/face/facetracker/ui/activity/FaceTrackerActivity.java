@@ -95,10 +95,10 @@ public final class FaceTrackerActivity extends AppCompatActivity
 //            Debug.waitForDebugger();
 
             // start another activity
-            Intent startResultIntent = new Intent(FaceTrackerActivity.this, FaceSwapActivity.class);
-            startResultIntent.putExtra("poster", poster);
-            startActivity(startResultIntent);
-            finish();
+//            Intent startResultIntent = new Intent(FaceTrackerActivity.this, FaceSwapActivity.class);
+//            startResultIntent.putExtra("poster", poster);
+//            startActivity(startResultIntent);
+//            finish();
 
             try {
                 // convert byte array into bitmap
