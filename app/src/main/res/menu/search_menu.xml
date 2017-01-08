@@ -4,6 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_search"
-        app:actionLayout="@layout/action_item_edit_text"
+        android:icon="@android:drawable/ic_menu_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always" />
 </menu>
+<!--app:actionLayout="@layout/action_item_edit_text"-->

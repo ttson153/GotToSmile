@@ -9,12 +9,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v7.widget.SearchView;
 
 import com.google.android.gms.samples.vision.face.facetracker.Poster;
 import com.google.android.gms.samples.vision.face.facetracker.R;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity
 
     private GridView posterGridView;
     private PosterAdapter posterAdapter;
+    private SearchView searchView;
 //    private Handler loadDatabaseHandler = new Handler(Looper.getMainLooper()) {
 //        @Override
 //        public void handleMessage(Message msg) {
@@ -73,28 +76,65 @@ public class MainActivity extends AppCompatActivity
         inflater.inflate(R.menu.search_menu, menu);
 
         // add callback for text changed
-        EditText searchEditText = (EditText) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
-        searchEditText.addTextChangedListener(new TextWatcher() {
+//        EditText searchEditText = (EditText) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+//        searchEditText.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                // do nothing
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                // do nothing
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                String searchString = s.toString();
+//
+//                if (s.equals(""))
+//                    onDiscoverPopularMovie();
+//                else
+//                    onSearchPoster(searchString);
+//            }
+//        });
+
+        final MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
+        searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // do nothing
+            public boolean onQueryTextSubmit(String query) {
+                searchView.setQuery(query, false);
+                searchView.clearFocus();
+
+//                if( ! searchView.isIconified()) {
+//                    searchView.setIconified(true);
+//                }
+
+                myActionMenuItem.collapseActionView();
+                onSearchPoster(query);
+                return true;
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // do nothing
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String searchString = s.toString();
-
-                if (s.equals(""))
-                    onDiscoverPopularMovie();
-                else
-                    onSearchPoster(searchString);
+            public boolean onQueryTextChange(String s) {
+                // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
+                return false;
             }
         });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                onDiscoverPopularMovie();
+
+                searchView.clearFocus();
+                searchView.onActionViewCollapsed();
+
+                return true;
+            }
+        });
+
         return true;
     }
 
@@ -105,9 +145,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void onSearchPoster(String movieName) {
+        String noWhiteSpaceMovieName = movieName.replace(" ", "%20");
+
         PosterLinkLoader linkLoader = new PosterLinkLoader();
         linkLoader.setListener(this);
-        linkLoader.start(movieName);
+        linkLoader.start(noWhiteSpaceMovieName);
     }
 
     private void onDiscoverPopularMovie() {
