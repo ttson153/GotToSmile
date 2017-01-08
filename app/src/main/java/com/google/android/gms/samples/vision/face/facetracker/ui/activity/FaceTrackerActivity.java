@@ -184,9 +184,15 @@ public final class FaceTrackerActivity extends AppCompatActivity
                 Bitmap fullSizePoster = ((MyApplication) getApplication()).getBitmap();
                 Bitmap overlayedPoster = FaceReplace.replaceOneFace(fullSizePoster, rotatedBitmap);
 
-                FaceView overlay = (FaceView) findViewById(R.id.face_view);
-                overlay.setContent(overlayedPoster, faces);
-                overlay.setVisibility(View.VISIBLE);
+                if (overlayedPoster != null) {
+                    FaceView overlay = (FaceView) findViewById(R.id.face_view);
+                    overlay.setContent(overlayedPoster, faces);
+                    overlay.setVisibility(View.VISIBLE);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Failed to init swap face", Toast.LENGTH_LONG).show();
+                    FaceTrackerActivity.super.onBackPressed();
+                }
 
                 // save image into gallery
                 rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
