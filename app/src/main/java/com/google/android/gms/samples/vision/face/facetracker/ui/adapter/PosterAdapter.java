@@ -77,13 +77,13 @@ public class PosterAdapter extends BaseAdapter {
 //        imageView.setImageResource(android.R.drawable.ic_menu_add);
 
         Poster poster = (Poster) getItem(position);
-        Log.i(TAG, MoviePosterUrl.getPosterUrl(poster.getImagePath(), MoviePosterUrl.MoviePosterSize.SMALL));
+//        Log.i(TAG, MoviePosterUrl.getPosterUrl(poster.getImagePath(), MoviePosterUrl.MoviePosterSize.SMALL));
 
         Picasso
                 .with(context)
                 .load(MoviePosterUrl.getPosterUrl(poster.getImagePath(), MoviePosterUrl.MoviePosterSize.SMALL))
-                .placeholder(R.drawable.icon)
-                .error(R.drawable.common_full_open_on_phone)
+                .placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_error)
                 .into(imageView);
 
         return imageView;

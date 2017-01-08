@@ -64,8 +64,8 @@ public class PosterFullView extends AppCompatActivity {
 
         Picasso.with(this)
                 .load(MoviePosterUrl.getPosterUrl(selectedPoster.getImagePath(), MoviePosterUrl.MoviePosterSize.LARGE))
-                .placeholder(R.drawable.icon)
-                .error(R.drawable.common_full_open_on_phone)
+                .placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_error)
                 .into(loadTarget);
     }
 

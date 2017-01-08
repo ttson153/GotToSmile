@@ -1,6 +1,7 @@
 package com.google.android.gms.samples.vision.face.facetracker;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
@@ -17,5 +18,15 @@ public class MyApplication extends Application {
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
+    }
+
+    private Bitmap tmpBitmap;
+
+    public Bitmap getBitmap() {
+        return tmpBitmap;
+    }
+
+    public void storeBitmap(Bitmap tmpBitmap) {
+        this.tmpBitmap = tmpBitmap;
     }
 }
