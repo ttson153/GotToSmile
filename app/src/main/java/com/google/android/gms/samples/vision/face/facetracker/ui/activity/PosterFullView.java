@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.android.gms.samples.vision.face.facetracker.MyApplication;
 import com.google.android.gms.samples.vision.face.facetracker.Poster;
 import com.google.android.gms.samples.vision.face.facetracker.R;
 import com.google.android.gms.samples.vision.face.facetracker.util.MoviePosterUrl;
@@ -47,6 +48,7 @@ public class PosterFullView extends AppCompatActivity {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 PosterFullView.this.onBitmapLoaded(bitmap);
+                MyApplication app = (MyApplication) getApplication();
             }
 
             @Override

@@ -69,6 +69,7 @@ public class PosterLoader {
             try {
                 url = new URL(urlRequest);
                 Bitmap result = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+
                 return result;
             } catch (Exception e) {
                 throw new RuntimeException(e);

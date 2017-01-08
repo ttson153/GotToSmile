@@ -50,6 +50,7 @@ import com.google.android.gms.samples.vision.face.facetracker.posterdownloader.P
 import com.google.android.gms.samples.vision.face.facetracker.posterdownloader.PosterLoader;
 import com.google.android.gms.samples.vision.face.facetracker.ui.camera.CameraSourcePreview;
 import com.google.android.gms.samples.vision.face.facetracker.ui.camera.GraphicOverlay;
+import com.google.android.gms.samples.vision.face.facetracker.util.MoviePosterUrl;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Frame;
@@ -57,6 +58,7 @@ import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -79,6 +81,7 @@ public final class FaceTrackerActivity extends AppCompatActivity
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
     private Bitmap mCurrentBitmap;
+    private SparseArray<Face> faces;
 
     private static final int RC_HANDLE_GMS = 9001;
 
@@ -156,7 +159,7 @@ public final class FaceTrackerActivity extends AppCompatActivity
 
                 // Create a frame from the bitmap and run face detection on the frame.
                 Frame frame = new Frame.Builder().setBitmap(rotatedBitmap).build();
-                SparseArray<Face> faces = safeDetector.detect(frame);
+                faces = safeDetector.detect(frame);
 
                 if (!safeDetector.isOperational()) {
                     // Note: The first time that an app using face API is installed on a device, GMS will
@@ -247,6 +250,9 @@ public final class FaceTrackerActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         poster = intent.getParcelableExtra("poster");
+
+        String fullSizePosterLink = MoviePosterUrl.getPosterUrl(poster.getImagePath(), MoviePosterUrl.MoviePosterSize.ORIGINAL);
+//        Bitmap fullSizePoster = Picasso
     }
 
     /**
