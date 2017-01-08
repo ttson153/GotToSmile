@@ -25,7 +25,7 @@ public class PosterAdapter extends BaseAdapter {
 
     private Context context;
     private List<Poster> posterList = new ArrayList<>();
-    private static int POSTER_THUMBNAIL_WIDTH = 1000;
+    private static int POSTER_THUMBNAIL_WIDTH = 500;
     private static final String TAG = "GotToSmile";
 
     public PosterAdapter(Context context) {
