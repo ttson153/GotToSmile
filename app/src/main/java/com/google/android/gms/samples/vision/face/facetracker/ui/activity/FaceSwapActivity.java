@@ -3,21 +3,12 @@ package com.google.android.gms.samples.vision.face.facetracker.ui.activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.location.Location;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -28,15 +19,18 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.ProfilePictureView;
 import com.facebook.share.ShareApi;
 import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.gms.samples.vision.face.facetracker.MyApplication;
 import com.google.android.gms.samples.vision.face.facetracker.R;
 import com.google.android.gms.samples.vision.face.facetracker.util.CapturePhotoUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 
 public class FaceSwapActivity extends AppCompatActivity {
 
@@ -108,9 +102,10 @@ public class FaceSwapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_face_swap);
 
         // get image
-        Intent intent = getIntent();
+//        Intent intent = getIntent();
 //        swappedImage = intent.getParcelableExtra("image");
-        swappedImage = BitmapFactory.decodeResource(getResources(), R.drawable.common_full_open_on_phone);
+//        swappedImage = BitmapFactory.decodeResource(getResources(), R.drawable.common_full_open_on_phone);
+        swappedImage = ((MyApplication) getApplication()).getBitmap();
 
         if (swappedImage == null) {
             Log.i(TAG, "No image found in intent in activity " + FaceSwapActivity.class);

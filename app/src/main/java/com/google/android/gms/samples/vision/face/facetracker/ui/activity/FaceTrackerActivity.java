@@ -42,15 +42,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.samples.vision.face.facetracker.MyApplication;
 import com.google.android.gms.samples.vision.face.facetracker.Poster;
 import com.google.android.gms.samples.vision.face.facetracker.R;
 import com.google.android.gms.samples.vision.face.facetracker.facedetector.FaceView;
 import com.google.android.gms.samples.vision.face.facetracker.facedetector.SafeFaceDetector;
+import com.google.android.gms.samples.vision.face.facetracker.faceswap.FaceReplace;
 import com.google.android.gms.samples.vision.face.facetracker.posterdownloader.PosterLinkLoader;
-import com.google.android.gms.samples.vision.face.facetracker.posterdownloader.PosterLoader;
 import com.google.android.gms.samples.vision.face.facetracker.ui.camera.CameraSourcePreview;
 import com.google.android.gms.samples.vision.face.facetracker.ui.camera.GraphicOverlay;
-import com.google.android.gms.samples.vision.face.facetracker.util.MoviePosterUrl;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Frame;
@@ -58,7 +58,6 @@ import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
-import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -66,7 +65,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Activity for the face tracker app.  This app detects faces with the rear facing camera, and draws
@@ -111,7 +109,7 @@ public final class FaceTrackerActivity extends AppCompatActivity
                         bytes.length);
 
                 Matrix rotateMatrix = new Matrix();
-                            rotateMatrix.postRotate(-90);
+                            rotateMatrix.postRotate(0);
                 rotateMatrix.postRotate(0);
                 rotatedBitmap = Bitmap.createBitmap(loadedImage, 0, 0,
                         loadedImage.getWidth(), loadedImage.getHeight(),
@@ -145,7 +143,7 @@ public final class FaceTrackerActivity extends AppCompatActivity
 //                    mCurrentBitmap.recycle();
 //                    mCurrentBitmap = null;
 //                }
-//                mCurrentBitmap = rotatedBitmap;
+                mCurrentBitmap = rotatedBitmap;
 
                 FaceDetector detector = new FaceDetector.Builder(getApplicationContext())
                         .setTrackingEnabled(false)
@@ -183,8 +181,11 @@ public final class FaceTrackerActivity extends AppCompatActivity
                     }
                 }
 
+                Bitmap fullSizePoster = ((MyApplication) getApplication()).getBitmap();
+                Bitmap overlayedPoster = FaceReplace.replaceOneFace(fullSizePoster, rotatedBitmap);
+
                 FaceView overlay = (FaceView) findViewById(R.id.face_view);
-                overlay.setContent(rotatedBitmap, faces);
+                overlay.setContent(overlayedPoster, faces);
                 overlay.setVisibility(View.VISIBLE);
 
                 // save image into gallery
@@ -206,6 +207,11 @@ public final class FaceTrackerActivity extends AppCompatActivity
 
                 //saveToInternalStorage(loadedImage);
 
+                ((MyApplication) getApplication()).storeBitmap(overlayedPoster);
+                Intent startResultIntent = new Intent(FaceTrackerActivity.this, FaceSwapActivity.class);
+                startResultIntent.putExtra("poster", poster);
+                startActivity(startResultIntent);
+                finish();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -251,8 +257,9 @@ public final class FaceTrackerActivity extends AppCompatActivity
         Intent intent = getIntent();
         poster = intent.getParcelableExtra("poster");
 
-        String fullSizePosterLink = MoviePosterUrl.getPosterUrl(poster.getImagePath(), MoviePosterUrl.MoviePosterSize.ORIGINAL);
-//        Bitmap fullSizePoster = Picasso
+//        String fullSizePosterLink = MoviePosterUrl.getPosterUrl(poster.getImagePath(), MoviePosterUrl.MoviePosterSize.ORIGINAL);
+//        Bitmap fullSizePoster = ((MyApplication) getApplication()).getBitmap();
+//        Bitmap overlayedPoster = FaceReplace.replaceOneFace(fullSizePoster, mCurrentBitmap);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.google.android.gms.samples.vision.face.facetracker;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.facebook.FacebookSdk;
@@ -11,11 +12,13 @@ import com.facebook.appevents.AppEventsLogger;
  */
 
 public class MyApplication extends Application {
+    public static Context context;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        context = getApplicationContext();
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
     }
