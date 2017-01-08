@@ -4,8 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.util.Log;
 import android.util.SparseArray;
-import android.widget.Toast;
 
 import com.google.android.gms.samples.vision.face.facetracker.MyApplication;
 import com.google.android.gms.samples.vision.face.facetracker.facedetector.SafeFaceDetector;
@@ -84,8 +84,7 @@ public class FaceReplace implements FaceSwapInterface {
         SparseArray<Face> userFaces = safeDetector.detect(frame);
         Face userFace = null;
         if (userFaces.size() == 0) {
-            Toast.makeText(MyApplication.context, "Face not detected. Please try again", Toast.LENGTH_LONG).show();
-
+            Log.d("GotToSmile", "Face not detected. Please try again");
             return null;
         }
         else {
@@ -99,7 +98,7 @@ public class FaceReplace implements FaceSwapInterface {
         SparseArray<Face> posterFaces = safeDetector.detect(framePoster);
         Face posterFace = null;
         if (posterFaces.size() == 0) {
-            Toast.makeText(MyApplication.context, "Poster not detected. Please try again", Toast.LENGTH_LONG).show();
+            Log.d("GotToSmile", "Poster not detected. Please try again");
             return null;
         }
         posterFace = posterFaces.get(posterFaces.keyAt(0));

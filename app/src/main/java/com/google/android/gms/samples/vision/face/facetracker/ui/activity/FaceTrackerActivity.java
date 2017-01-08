@@ -19,7 +19,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,8 +28,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -59,12 +56,8 @@ import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Activity for the face tracker app.  This app detects faces with the rear facing camera, and draws
@@ -93,7 +86,6 @@ public final class FaceTrackerActivity extends AppCompatActivity
 
         @Override
         public void onPictureTaken(byte[] bytes) {
-//            Debug.waitForDebugger();
 
             // start another activity
 //            Intent startResultIntent = new Intent(FaceTrackerActivity.this, FaceSwapActivity.class);
@@ -114,30 +106,6 @@ public final class FaceTrackerActivity extends AppCompatActivity
                 rotatedBitmap = Bitmap.createBitmap(loadedImage, 0, 0,
                         loadedImage.getWidth(), loadedImage.getHeight(),
                         rotateMatrix, false);
-
-                File dir = new File(
-                        Environment.getExternalStoragePublicDirectory(
-                                Environment.DIRECTORY_PICTURES), "GMS Vision");
-
-                boolean success = true;
-                if (!dir.exists())
-                {
-                    success = dir.mkdirs();
-                }
-                if (success) {
-                    String timeStamp = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_").format(new Date());
-                    imageFile = new File(dir.getAbsolutePath()
-                            + File.separator
-                            + timeStamp
-                            + "image.jpg");
-
-                    imageFile.createNewFile();
-                } else {
-                    Toast.makeText(getBaseContext(), "Image Not saved",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                ByteArrayOutputStream ostream = new ByteArrayOutputStream();
 
 //                if (mCurrentBitmap != null) {
 //                    mCurrentBitmap.recycle();
@@ -188,36 +156,17 @@ public final class FaceTrackerActivity extends AppCompatActivity
                     FaceView overlay = (FaceView) findViewById(R.id.face_view);
                     overlay.setContent(overlayedPoster, faces);
                     overlay.setVisibility(View.VISIBLE);
+
+                    ((MyApplication) getApplication()).storeBitmap(overlayedPoster);
+                    Intent startResultIntent = new Intent(FaceTrackerActivity.this, FaceSwapActivity.class);
+                    startResultIntent.putExtra("poster", poster);
+                    startActivity(startResultIntent);
+                    finish();
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Failed to init swap face", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "please retake a picture with a face", Toast.LENGTH_LONG).show();
                     FaceTrackerActivity.super.onBackPressed();
                 }
-
-                // save image into gallery
-                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
-
-                FileOutputStream fout = new FileOutputStream(imageFile);
-                fout.write(ostream.toByteArray());
-                fout.close();
-                ContentValues values = new ContentValues();
-
-                values.put(MediaStore.Images.Media.DATE_TAKEN,
-                        System.currentTimeMillis());
-                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                values.put(MediaStore.MediaColumns.DATA,
-                        imageFile.getAbsolutePath());
-
-                FaceTrackerActivity.this.getContentResolver().insert(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-                //saveToInternalStorage(loadedImage);
-
-                ((MyApplication) getApplication()).storeBitmap(overlayedPoster);
-                Intent startResultIntent = new Intent(FaceTrackerActivity.this, FaceSwapActivity.class);
-                startResultIntent.putExtra("poster", poster);
-                startActivity(startResultIntent);
-                finish();
 
             } catch (Exception e) {
                 e.printStackTrace();

@@ -26,7 +26,7 @@ public class MoviePosterUrl {
             case LARGE:
                 return "w780";
             case ORIGINAL:
-                return "original";
+                return "w1920";
             default:
                 return null;
         }
